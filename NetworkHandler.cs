@@ -29,7 +29,7 @@ public class NetworkHandler
                 HWR.Headers["Cookie"] += cookie.name + "=" + cookie.value + ";";
         }
         HWR.Method = "GET";
-        if (presentUserAgent) HWR.Headers["User-Agent"] = USER_AGENT;
+        if (presentUserAgent) HWR.UserAgent = USER_AGENT;
         if (!string.IsNullOrEmpty(referer)) HWR.Referer = referer;
         if (headers != null)
             foreach (NameValuePair header in headers)
@@ -69,7 +69,7 @@ public class NetworkHandler
                 HWR.Headers["Cookie"] += cookie.name + "=" + cookie.value + ";";
         }
         HWR.Method = "POST";
-        if (presentUserAgent) HWR.Headers["User-Agent"] = USER_AGENT;
+        if (presentUserAgent) HWR.UserAgent = USER_AGENT;
         if (!string.IsNullOrEmpty(referer)) HWR.Referer = referer;
         if (headers != null)
             foreach (NameValuePair header in headers)
