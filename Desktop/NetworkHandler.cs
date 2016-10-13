@@ -19,7 +19,7 @@ public class NetworkHandler
         Cookies = new List<NameValuePair>();
     }
 
-    public async Task<WebResponse> GETRequestCore(string URL, bool useCookieContainer = false, List<NameValuePair> headers = null, bool presentUserAgent = false, string referer = null)
+    public async Task<WebResponse> GETRequestCore(string URL, bool useCookieContainer = false, List<NameValuePair> headers = null, bool presentUserAgent = false, string referer = null, string accept = null, bool? keepAlive = false)
     {
         HttpWebRequest HWR = (HttpWebRequest)HttpWebRequest.Create(URL);
         if (useCookieContainer)
@@ -29,6 +29,8 @@ public class NetworkHandler
                 HWR.Headers["Cookie"] += cookie.name + "=" + cookie.value + ";";
         }
         HWR.Method = "GET";
+        if (keepAlive.HasValue) HWR.KeepAlive = keepAlive.Value;
+        if (!string.IsNullOrEmpty(accept)) HWR.Accept = accept;
         if (presentUserAgent) HWR.UserAgent = USER_AGENT;
         if (!string.IsNullOrEmpty(referer)) HWR.Referer = referer;
         if (headers != null)
@@ -41,21 +43,21 @@ public class NetworkHandler
         return getResponse;
     }
 
-    public async Task<string> GETRequestAsync(string URL, bool useCookieContainer = false, List<NameValuePair> headers = null, bool presentUserAgent = false, string referer = null)
+    public async Task<string> GETRequestAsync(string URL, bool useCookieContainer = false, List<NameValuePair> headers = null, bool presentUserAgent = false, string referer = null, string accept = null, bool? keepAlive = false)
     {
-        using (StreamReader SR = new StreamReader((await GETRequestCore(URL, useCookieContainer, headers, presentUserAgent, referer)).GetResponseStream()))
+        using (StreamReader SR = new StreamReader((await GETRequestCore(URL, useCookieContainer, headers, presentUserAgent, referer, accept, keepAlive)).GetResponseStream()))
             return await SR.ReadToEndAsync();
     }
 
-    public async Task<Image> GETRequestAsImageAsync(string URL, bool useCookieContainer = false, List<NameValuePair> headers = null, bool presentUserAgent = false, string referer = null)
+    public async Task<Image> GETRequestAsImageAsync(string URL, bool useCookieContainer = false, List<NameValuePair> headers = null, bool presentUserAgent = false, string referer = null, string accept = null, bool? keepAlive = false)
     {
-        return Image.FromStream((await GETRequestCore(URL, useCookieContainer, headers, presentUserAgent, referer)).GetResponseStream());
+        return Image.FromStream((await GETRequestCore(URL, useCookieContainer, headers, presentUserAgent, referer, accept, keepAlive)).GetResponseStream());
     }
 
-    public async Task<HtmlDocument> GETRequestAsDocumentAsync(string URL, bool useCookieContainer = false, List<NameValuePair> headers = null, bool presentUserAgent = false, string referer = null)
+    public async Task<HtmlDocument> GETRequestAsDocumentAsync(string URL, bool useCookieContainer = false, List<NameValuePair> headers = null, bool presentUserAgent = false, string referer = null, string accept = null, bool? keepAlive = false)
     {
         HtmlDocument doc = new HtmlDocument();
-        doc.Load((await GETRequestCore(URL, useCookieContainer, headers, presentUserAgent, referer)).GetResponseStream());
+        doc.Load((await GETRequestCore(URL, useCookieContainer, headers, presentUserAgent, referer, accept, keepAlive)).GetResponseStream());
         return doc;
     }
 
